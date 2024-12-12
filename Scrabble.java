@@ -1,28 +1,34 @@
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Scrabble {
 
     static final String WORDS_FILE = "dictionary.txt";
     static final int[] SCRABBLE_LETTER_VALUES = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
     static final int HAND_SIZE = 10;
-    static Set<String> DICTIONARY = new HashSet<>();
+    static final int MAX_NUMBER_OF_WORDS = 100000;
+    static String[] DICTIONARY = new String[MAX_NUMBER_OF_WORDS];
+    static int NUM_OF_WORDS;
 
     public static void init() {
         Scanner scanner = new Scanner(Scrabble.class.getResourceAsStream(WORDS_FILE));
-        if (scanner == null) {
-            throw new IllegalStateException("Dictionary file not found: " + WORDS_FILE);
-        }
         System.out.println("Loading word list from file...");
-        while (scanner.hasNext()) {
-            DICTIONARY.add(scanner.next().toLowerCase());
+        NUM_OF_WORDS = 0;
+        while (scanner.hasNext() && NUM_OF_WORDS < MAX_NUMBER_OF_WORDS) {
+            DICTIONARY[NUM_OF_WORDS++] = scanner.next().toLowerCase();
         }
-        System.out.println(DICTIONARY.size() + " words loaded.");
+        System.out.println(NUM_OF_WORDS + " words loaded.");
     }
 
     public static boolean isWordInDictionary(String word) {
-        return word != null && !word.isEmpty() && DICTIONARY.contains(word.toLowerCase());
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < NUM_OF_WORDS; i++) {
+            if (word.equals(DICTIONARY[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int wordScore(String word) {
@@ -98,11 +104,6 @@ public class Scrabble {
             }
         }
     }
-
-    public static void main(String[] args) {
-        playGame();
-    }
-}
 
     public static void main(String[] args) {
         playGame();
